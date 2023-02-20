@@ -6,20 +6,20 @@
 #### Custom function
 Алгоритм Евклида
 
-```
+```python
 def gcd(a, b): 
     while b != 0: 
         a, b = b, a % b 
     return a
 ```
 #### Math approach
-```
+```python
 math.gcd(a, b)
 ```
 ---
 ### C++
 #### Custom function
-```
+```cpp
 int gcd(int a, int b) {
    if (b == 0){
    		return a;
@@ -28,7 +28,7 @@ int gcd(int a, int b) {
 }
 ```
 ### STD
-```
+```cpp
 #include<numeric>
 
 std::gcd(a, b);
@@ -37,7 +37,7 @@ std::gcd(a, b);
 ## НОК (Наименьшее общее кратное)
 ### Python
 #### Custom function
-```
+```python
 def lcm(a, b):
 	if a > b:
 		greater = a
@@ -51,19 +51,19 @@ def lcm(a, b):
 ### GCD -> LCM Approach
 This code works because LCM * GCD = a * b
 
-```
+```python
 def lcm(a, b):
    lcm = (a * b) // gcd(a,b)
    return lcm
 ```
 #### Math approach
-```
+```python
 math.lcm(a, b)
 ```
 --
 ### C++
 #### Custom function
-```
+```cpp
 int lcm(int a, int b){
 	int greater = (a > b) ? a : b
 	while(true){
@@ -75,7 +75,7 @@ int lcm(int a, int b){
 }
 ```
 #### STD
-```
+```cpp
 #include<numeric>
 
 std::lcm(a, b);
@@ -84,7 +84,7 @@ std::lcm(a, b);
 ## Решето Эратосфена
 Выводит все простые числа меньшие N
 ### Python
-```
+```python
 def sieve(n):
     prime = [True for i in range(n+1)]
     primes = []
