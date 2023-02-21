@@ -101,3 +101,28 @@ def sieve(n):
             primes.append(p)
     return primes
 ```
+## Факторизация (Разложение на множители)
+```python
+def Factor(n):
+    Ans = []
+    d = 2
+    while d * d <= n: # То же самое, что и d <= sqrt(n)
+        if n % d == 0:
+            Ans.append(d)
+            n //= d
+        else:
+            d += 1
+    if n > 1:
+        Ans.append(n)
+    return Ans
+```
+## Проверка числа на простоту
+```python
+def isPrime(n):
+    if n % 2 == 0:
+        return n == 2
+    d = 3
+    while d * d <= n and n % d != 0:
+        d += 2
+    return d * d > n
+```
