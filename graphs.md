@@ -72,6 +72,137 @@ def bfs(used, graph, node):
         queue.append(unt)
 ```
 ## C++
-```cpp
 
+Здесь реализуется задача о кратчайшем пути в невзвешенном графе между двумя данными вершинами.
+
+```cpp
+int n;
+vector<vector<int> >gr;
+vector<int>prevv;
+vector<int>used;
+queue<int> q;
+
+void bfs(int a, int b){
+	q.push(a);
+	used[a] = true;
+	prevv[a] = -1;
+	while (!q.empty()) {
+	    int v = q.front();
+	    q.pop();
+	    for (int u : gr[v]) {
+	        if (!used[u]) {
+	            used[u] = true;
+	            q.push(u);
+	            prevv[u] = v;
+	        }
+	    }
+	}
+}
+
+```
+
+### Восстановление пути
+
+```cpp
+void printPath(int a, int b){
+	if (used[b] == 0) {
+    	cout << -1 << endl;
+	} else {
+	    vector<int> path;
+	    for (int v = b; v != -1; v = prevv[v])
+	        path.push_back(v);
+	    reverse(path.begin(), path.end());
+	    cout << path.size()-1 << endl;
+	    if (path.size() != 1){
+		    for (int v : path){
+		        cout << v+1 << " ";
+		    }
+		    cout << endl;
+		}
+	}
+}
+```
+# Ключевые задачи
+## 1. Проверка графа на двудольность и разделение его на две доли
+
+Начинаем покраску с произвольной вершины, которую красим в произвольный цвет. При прохождении по каждому ребру красим следующую вершину в противоположный цвет. Если при переборе соседних вершин мы нашли вершину, уже покрашенную в тот же цвет, что и текущая, то в графе существует нечётный цикл, а значит, он не является двудольным.
+
+```cpp
+//TODO
+```
+
+## 2. Проверка графа на ацикличность
+Граф записывается только в одну сторону, чтобы избежать повторов.
+
+```cpp
+//если flag == true, цикл есть.
+void dfs(int v){
+	if (flag == true){
+		return;
+	}
+	color[v] = 1;
+	for (int i = 0; i < gr[v].size(); i++){
+		int unt = gr[v][i];
+		if (color[unt] == 1) {
+			//if gray
+			flag = true;
+			return;
+		} else {
+			dfs(unt);
+		} if (flag == true){
+			return;
+		}
+	}
+	color[v] = 2; //black
+}
+```
+## 3. Проверка графа на "деревянность"
+Дерево - связный ацикличкский граф, где между каждой парой вершин существует только один простой путь, и, в нем $E = V - 1$. Это усложенный вариант задачи "Проверка графа на ацикличность".
+В коде приведенном ниже используется другой алгоритм проверки цикличности.
+В процессе dfsа функция returnится, если обнаруживает уже пройденную вершину.
+
+```cpp
+vector<vector <int> >gr;
+vector<int> used;
+
+void dfs(int v){
+	if (used[v] == 1){
+		return;
+	}
+	used[v] = 1;
+	for (int i = 0; i < gr[v].size(); i++){
+		int unt = gr[v][i];
+		dfs(unt);
+	}
+	return;
+}
+
+int main(){
+	for (int i = 0; i < n; i++){
+		for (int j = 0; j < n; j++){
+			cin >> tmp;
+			if (tmp == 1){
+				e++;
+				gr[i].push_back(j);
+			}
+		}
+	}
+	//Check for connectivity
+	dfs(0);
+	bool isConnected = true;
+	int i = 0;
+	while(isConnected && i < n){
+		if (used[i] == 0){
+			isConnected = false;
+		}
+		i++;
+	}
+	//Check that E = V - 1
+	if (((e/2) == n - 1) && isConnected){
+		cout << "YES" << endl;
+	} else {
+		cout << "NO" << endl;
+	}
+	return 0;
+}
 ```
