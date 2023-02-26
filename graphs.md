@@ -206,3 +206,151 @@ int main(){
 	return 0;
 }
 ```
+## 4. Подсчёт и вывод компонент связности
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+
+vector<vector< int> > gr;
+vector<int> used;
+vector<vector <int> > comps;
+vector<int>curr_comp;
+
+
+bool dfs(int v, int color){
+	if (used[v] != 0){
+		return false;
+	}
+	used[v] = color;
+	curr_comp.push_back(v);
+	for (int i = 0; i < gr[v].size(); i++){
+		int unt = gr[v][i];
+		if (used[unt] == 0){
+			dfs(unt, color);
+		}
+	}
+	return false;
+}
+
+int main(){
+	int n, m, a, b;
+	cin >> n >> m;
+	gr.resize(n);
+	used.assign(n, 0);
+	for (int i = 0; i < m; i++){
+		cin >> a >> b;
+		gr[a-1].push_back(b-1);
+		gr[b-1].push_back(a-1);
+	}
+	int counter = 1;
+	int i = 0;
+	while (i < n){
+		if (used[i] != 0){
+			i++;
+			continue;
+		} else {
+			curr_comp.clear();
+			dfs(i, counter);
+			comps.push_back(curr_comp);
+			counter++;
+			i++;
+		}
+	}
+	return 0;
+}
+```
+## 5. Бусинки (AAAAAGH!!!)
+Текст примера задачи
+
+*Маленький мальчик делает бусы. У него есть много пронумерованных бусинок. Каждая бусинка имеет уникальный номер - целое число в диапазоне от 1 до N. Он выкладывает все бусинки на полу и соединяет бусинки между собой произвольным образом так, что замкнутых контуров не образуется. Каждая из бусинок при этом оказывается соединенной с какой-либо другой бусинкой. Требуется определить, какое максимальное количество последовательно соединенных бусинок присутствует в полученной фигуре.*
+
+Обобщённое условие задачи
+
+*Найти самую длинную последовательность вершин в дереве* 
+
+```python
+import sys
+sys.setrecursionlimit(3000)
+def dfs(v, max_children_size):
+	used[v] = True
+	best_size = 1
+	max1 = -1
+	max2 = -1
+	max_children_size[v] = 1
+	for unt in gr[v]:
+		if (not used[unt]):
+			best_size = max(dfs(unt, max_children_size), best_size)
+			if max_children_size[unt] > max1:
+				max2 = max1
+				max1 = max_children_size[unt]
+			elif max_children_size[unt] > max2:
+				max2 = max_children_size[unt]
+	best_size = max(best_size, max1 + 1)
+	best_size = max(best_size, max1 + max2 + 1)
+	max_children_size[v] = max(max_children_size[v], max1 + 1)
+	return best_size
+n = int(input())
+gr = [[] for _ in range(n+1)]
+for i in range(n-1):
+	a, b = map(int, input().split())
+	gr[a].append(b)
+	gr[b].append(a)
+max_children_size = [0] * (n + 1)
+used = [False] * (n + 1)
+print(dfs(1, max_children_size))
+```
+
+Решение на c++ лучше в проде не писать!!!
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int MAXN = 3001;
+vector<int> gr[MAXN];
+bool used[MAXN];
+int max_children_size[MAXN];
+
+int dfs(int v, int& max_children) {
+    used[v] = true;
+    int best_size = 1;
+    int max1 = -1, max2 = -1;
+    max_children = 1;
+    for (int i = 0; i < gr[v].size(); i++) {
+        int unt = gr[v][i];
+        if (!used[unt]) {
+            int child_max;
+            best_size = max(dfs(unt, child_max), best_size);
+            if (child_max > max1) {
+                max2 = max1;
+                max1 = child_max;
+            } else if (child_max > max2) {
+                max2 = child_max;
+            }
+            max_children = max(max_children, child_max + 1);
+        }
+    }
+    best_size = max(best_size, max1 + 1);
+    best_size = max(best_size, max1 + max2 + 1);
+    max_children_size[v] = max(max_children_size[v], max1 + 1);
+    return best_size;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    for (int i = 0; i < n-1; i++) {
+        int a, b;
+        cin >> a >> b;
+        gr[a].push_back(b);
+        gr[b].push_back(a);
+    }
+    int max_children = 0;
+    cout << dfs(1, max_children) << endl;
+    return 0;
+}
+```
