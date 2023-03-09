@@ -127,8 +127,61 @@ void printPath(int a, int b){
 
 Начинаем покраску с произвольной вершины, которую красим в произвольный цвет. При прохождении по каждому ребру красим следующую вершину в противоположный цвет. Если при переборе соседних вершин мы нашли вершину, уже покрашенную в тот же цвет, что и текущая, то в графе существует нечётный цикл, а значит, он не является двудольным.
 
+*Пример условия задачи*
+
+*На банкет были приглашены N Очень Важных Персон (ОВП). Были поставлены 2 стола. Столы достаточно большие, чтобы все посетители банкета могли сесть за любой из них. Проблема заключается в том, что некоторые ОВП не ладят друг с другом и не могут сидеть за одним столом. Вас попросили определить, возможно ли всех ОВП рассадить за двумя столами.*
+
 ```cpp
-//TODO
+vector<vector<int > > gr;
+vector<int> color;
+vector<int> used;
+bool dfs(int v){
+	for (int i = 0; i < gr[v].size(); i++){
+		int unt = gr[v][i];
+		if (!used[unt]){
+			used[unt] = true;
+			color[unt] = !color[v];
+			if (dfs(unt) == false){
+				return false;
+			}
+		} else if (color[v] == color[unt]){
+			return false;
+		}
+	}
+	return true;
+}
+
+int main(){
+	int n, m, a, b;
+	cin >> n >> m;
+	gr.resize(n+1);
+	color.assign(n+1, 0);
+	used.assign(n+1, 0);
+	for (int i = 0; i < m; i++){
+		cin >> a >> b;
+		gr[a].push_back(b);
+		gr[b].push_back(a);
+	}
+	bool marker = true;
+	for (int i = 1; i <= n; i++){
+			if (!dfs(i)){
+				marker = false;
+				break;
+			}
+	}
+	if (marker){
+		cout << "YES" << endl;
+		for (int i = 1; i <= n; i++){
+			if (color[i] == 1) {
+				cout << i << " ";
+			}
+		}
+	cout << endl;
+	} else {
+		cout << "NO" << endl;
+	}
+	return 0;
+}
 ```
 
 ## 2. Проверка графа на ацикличность
@@ -352,5 +405,46 @@ int main() {
     int max_children = 0;
     cout << dfs(1, max_children) << endl;
     return 0;
+}
+```
+# Алгоритм Дейкстры
+*Задача*
+
+Дан ориентированный взвешенный граф. Найдите кратчайшее расстояние от одной заданной вершины до другой.
+
+```cpp
+vector<vector<int> > readGraph(int n) {
+    vector<vector<int> > graph(n, vector<int>(n));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> graph[i][j];
+        }
+    }
+    return graph;
+}
+
+vector<int> dijkstra(const vector<vector<int> >& graph, int start, int end) {
+    int n = graph.size();
+    vector<bool> visited(n, false);
+    vector<int> dist(n, INF);
+    dist[start] = 0;
+    for (int i = 0; i < n; i++) {
+        int u = -1;
+        for (int j = 0; j < n; j++) {
+            if (!visited[j] && (u == -1 || dist[j] < dist[u])) {
+                u = j;
+            }
+        }
+        if (dist[u] == INF) {
+            break;
+        }
+        visited[u] = true;
+        for (int v = 0; v < n; v++) {
+            if (graph[u][v] != -1 && u != v && dist[u] + graph[u][v] < dist[v]) {
+                dist[v] = dist[u] + graph[u][v];
+            }
+        }
+    }
+    return dist;
 }
 ```
