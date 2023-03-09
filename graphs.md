@@ -448,3 +448,48 @@ vector<int> dijkstra(const vector<vector<int> >& graph, int start, int end) {
     return dist;
 }
 ```
+*Восстановление пути*
+
+# Алгоритм Флойда
+```cpp
+vector<vector<int> > floyd(){
+	vector<vector<int> > A(n, vector<int> (n));
+	for (int i = 0; i < n; i++){
+		for (int j = 0; j < n; j++){
+			A[i][j] = gr[i][j];
+		}
+	}
+	for (int k = 0; k < n; k++){
+		for (int i = 0; i < n; i++){
+			for (int j = 0; j < n; j++){
+				if (A[i][k] != inf && A[k][j] != inf && A[i][k] + A[k][j] < A[i][j]){
+					A[i][j] = A[i][k] + A[k][j];
+				}
+			}
+		}
+	}
+	return A;
+}
+
+int main(){
+	int s, t, tmp;
+	cin >> n >> s >> t;
+	s--;
+	t--;
+	gr.resize(n, vector<int>(n));
+	for(int i = 0; i < n; i++){
+		for (int j = 0; j < n; j++){
+			cin >> tmp;
+			if (tmp != -1){
+				gr[i][j] = tmp;
+			} else {
+				gr[i][j] = inf;
+			}
+		}
+	}
+	vector<vector<int> > arr = floyd();
+	cout << arr[s][t] << endl;
+	return 0;
+}
+```
+*Восстановление пути*
